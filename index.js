@@ -3,12 +3,34 @@
  */
 
  const http = require('http');
+ const https = require('https');
  const url = require('url');
  const StringDecoder = require('string_decoder').StringDecoder;
  const config = require('./config');
+ const fs = require('fs');
+ // instantiate http server
+ const httpServer = http.createServer((req, res) => {
+     unifiedServer(req, res);
+ })
 
- // Respond to all requests with a string
- const server = http.createServer((req, res) => {
+ // Start the httpServer
+ httpServer.listen(config.httpPort, () => console.log(`The server is listening in port ${config.httpPort} in ${config.envName} mode`))
+
+ // instantiate the https server
+ const httpsServerOptions = {
+     'key': fs.readFileSync('./https/key.pem'),
+     'cert': fs.readFileSync('./https/cert.pem')
+ }
+ const httpsServer = https.createServer(httpsServerOptions, (req, res) => {
+    unifiedServer(req, res);
+})
+
+
+ // start the https server
+ httpsServer.listen(config.httpsPort, () => console.log(`The server is listening in port ${config.httpsPort} in ${config.envName} mode`))
+
+ // All server logic for both https and http
+ const unifiedServer = (req, res) => {
 
      // get the url and parse it
      // url comes from the req
@@ -80,17 +102,10 @@
         
     });
 
+ }
 
-
- })
-
-
-
- // Start the server
- server.listen(config.port, () => console.log(`The server is listening in port ${config.port} in ${config.envName} mode`))
-
+ 
  // define the handlers
-
  let handlers = {};
 
  handlers.sample = (data, callback) => {
