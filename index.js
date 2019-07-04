@@ -12,7 +12,7 @@
 
  // TESTING
  // TODO: delete this
- _data.create('test', 'newFile', {'Name': 'Olusola'}, (err) => {
+ _data.update('test', 'newFile',{'fizz': 'buzz'}, (err) => {
      console.log('This was the err', err);
  })
  
