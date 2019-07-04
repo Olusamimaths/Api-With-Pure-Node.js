@@ -34,6 +34,7 @@
         // the data is in an unreadable format, decode it
         buffer += decoder.write(data);
     })
+    // after buffering
     req.on('end', () => {
         buffer += decoder.end();
 
@@ -62,6 +63,7 @@
         let payloadString = JSON.stringify(payload);
         
         // Return the response
+        res.setHeader('Content-type', 'application/json')
         res.writeHead(statusCode);
         res.end(payloadString)
 

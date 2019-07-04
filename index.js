@@ -63,6 +63,7 @@
         let payloadString = JSON.stringify(payload);
         
         // Return the response
+        res.setHeader('Content-type', 'application/json')
         res.writeHead(statusCode);
         res.end(payloadString)
 
