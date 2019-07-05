@@ -8,14 +8,8 @@
  const StringDecoder = require('string_decoder').StringDecoder;
  const config = require('./config');
  const fs = require('fs');
- const _data = require('./lib/data');
-
- // TESTING
- // TODO: delete this
- _data.update('test', 'newFile',{'fizz': 'buzz'}, (err) => {
-     console.log('This was the err', err);
- })
- 
+ const handlers = require('./lib/handlers');
+ const helpers = require('./lib/helpers');
 
  // instantiate http server
  const httpServer = http.createServer((req, res) => {
@@ -50,7 +44,7 @@
     let trimmedPath = path.replace(/^\/*|\/+$/g, '');
 
     // get the query string as an object
-    const query = parsedUrl.query;
+    const queryStringObject = parsedUrl.query;
 
     // Get the HTTP method
     const method = req.method.toLowerCase();
@@ -76,10 +70,10 @@
     // construct the data object to send to the handler
      let data = {
          trimmedPath,
-         'queryStringPath': query,
+         queryStringObject,
          method,
          headers,
-         payload: buffer
+         payload: helpers.parseJsonToObject(buffer) 
      }
 
      // Route the request to the handler
@@ -104,7 +98,7 @@
      })
 
     // send the response
-    res.end('Hello World \n');
+    //res.end('Hello World \n');
 
     // log the payload
      console.log(`Request recieved with these payload`, buffer)
@@ -114,19 +108,8 @@
  }
 
  
- // define the handlers
- let handlers = {};
-
- // ping handler
- handlers.ping = (data, callback) => {
-    callback(200)
- }
-
- handlers.notFound = (data, callback) => {
-    callback(404)
- }
-
  //define the request router
  const router = {
-     'ping': handlers.ping
+     'ping': handlers.ping,
+     'users': handlers.users
  }

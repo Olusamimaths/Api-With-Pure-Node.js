@@ -10,14 +10,16 @@
  environments.staging = {
     'httpPort': 3000,
     'httpsPort': 3001,
-    'envName': 'staging'
+    'envName': 'staging',
+    'hashingSecret': 'noOneKnowsAboutThis'
  };
 
  // Production environment
  environments.production = {
     'httpPort': 5000,
     'httpsPort': 5001,
-    'envName': 'production'
+    'envName': 'production',
+    'hashingSecret': 'noOtherPersonKnowsThis'
  }
 
  // determine with to export as was passed in the cmd
