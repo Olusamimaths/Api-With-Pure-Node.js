@@ -78,6 +78,7 @@
 
      // Route the request to the handler
      // args to handler are data and a callback func
+     // this is a function call!!!
      choosenHandler(data, (statusCode, payload) => {
         // use handler's status code or default 200
         statusCode = typeof(statusCode) === 'number' ? statusCode : 200;
@@ -95,7 +96,7 @@
 
         // log the request path
         console.log('Returning this response ', statusCode, payload);
-     })
+     });
 
     // send the response
     //res.end('Hello World \n');
