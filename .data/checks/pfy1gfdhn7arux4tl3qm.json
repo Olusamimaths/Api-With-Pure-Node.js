@@ -1,1 +1,1 @@
-{"id":"pfy1gfdhn7arux4tl3qm","userPhone":"08165670164","protocol":"http","url":"google.com","method":"get","successCodes":[200,201],"timeoutSeconds":3}
+{"id":"pfy1gfdhn7arux4tl3qm","userPhone":"08165670164","protocol":"http","url":"google.com","method":"post","successCodes":[200,201],"timeoutSeconds":3}
