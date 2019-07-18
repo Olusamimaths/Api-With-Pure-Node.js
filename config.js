@@ -12,7 +12,13 @@
     'httpsPort': 3001,
     'envName': 'staging',
     'hashingSecret': 'noOneKnowsAboutThis',
-    'maxChecks': 5
+    'maxChecks': 5,
+    'twilio' : {
+       'accountSid': '',
+       'authToken': '',
+       'fromPhone': ''
+    }
+
  };
 
  // Production environment
@@ -21,7 +27,12 @@
     'httpsPort': 5001,
     'envName': 'production',
     'hashingSecret': 'noOtherPersonKnowsThis',
-    'maxChecks': 5
+    'maxChecks': 5,
+    'twilio' : {
+      'accountSid': '',
+      'authToken': '',
+      'fromPhone': ''
+   }
  }
 
  // determine with to export as was passed in the cmd
