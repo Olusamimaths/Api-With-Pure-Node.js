@@ -15,7 +15,6 @@
  const httpServer = http.createServer((req, res) => {
      unifiedServer(req, res);
  })
-
  // Start the httpServer
  httpServer.listen(config.httpPort, () => console.log(`The server is listening in port ${config.httpPort} in ${config.envName} mode`))
 
@@ -27,12 +26,14 @@
  const httpsServer = https.createServer(httpsServerOptions, (req, res) => {
     unifiedServer(req, res);
 })
-
-
  // start the https server
  httpsServer.listen(config.httpsPort, () => console.log(`The server is listening in port ${config.httpsPort} in ${config.envName} mode`))
 
- // All server logic for both https and http
+
+ /**
+  * @param: req, res 
+  * @ServerLogic for both https and http 
+  */
  const unifiedServer = (req, res) => {
 
      // get the url and parse it
@@ -52,10 +53,10 @@
     // Get the headers as an object
     const headers = req.headers;
 
-    // get the payloa, if any
+    // get the payload, if any
     const decoder = new StringDecoder('utf-8');
     let buffer = '';
-    // write the decoder data to the before
+    // write the decoded data to the buffer
     req.on('data', (data) => {
         // the data is in an unreadable format, decode it
         buffer += decoder.write(data);
@@ -107,11 +108,11 @@
     });
 
  }
-
  
  //define the request router
  const router = {
      'ping': handlers.ping,
      'users': handlers.users,
-     'tokens': handlers.tokens
+     'tokens': handlers.tokens,
+     'checks': handlers.checks,
  }

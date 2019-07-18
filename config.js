@@ -11,7 +11,8 @@
     'httpPort': 3000,
     'httpsPort': 3001,
     'envName': 'staging',
-    'hashingSecret': 'noOneKnowsAboutThis'
+    'hashingSecret': 'noOneKnowsAboutThis',
+    'maxChecks': 5
  };
 
  // Production environment
@@ -19,7 +20,8 @@
     'httpPort': 5000,
     'httpsPort': 5001,
     'envName': 'production',
-    'hashingSecret': 'noOtherPersonKnowsThis'
+    'hashingSecret': 'noOtherPersonKnowsThis',
+    'maxChecks': 5
  }
 
  // determine with to export as was passed in the cmd
