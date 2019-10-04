@@ -3,12 +3,38 @@
  */
 
  const http = require('http');
+ const https = require('https');
  const url = require('url');
  const StringDecoder = require('string_decoder').StringDecoder;
  const config = require('./config');
+ const fs = require('fs');
+ const handlers = require('./lib/handlers');
+ const helpers = require('./lib/helpers');
 
- // Respond to all requests with a string
- const server = http.createServer((req, res) => {
+ // instantiate http server
+ const httpServer = http.createServer((req, res) => {
+     unifiedServer(req, res);
+ })
+ // Start the httpServer
+ httpServer.listen(config.httpPort, () => console.log(`The server is listening in port ${config.httpPort} in ${config.envName} mode`))
+
+ // instantiate the https server
+ const httpsServerOptions = {
+     'key': fs.readFileSync('./https/key.pem'),
+     'cert': fs.readFileSync('./https/cert.pem')
+ }
+ const httpsServer = https.createServer(httpsServerOptions, (req, res) => {
+    unifiedServer(req, res);
+})
+ // start the https server
+ httpsServer.listen(config.httpsPort, () => console.log(`The server is listening in port ${config.httpsPort} in ${config.envName} mode`))
+
+
+ /**
+  * @param: req, res 
+  * @ServerLogic for both https and http 
+  */
+ const unifiedServer = (req, res) => {
 
      // get the url and parse it
      // url comes from the req
@@ -19,7 +45,7 @@
     let trimmedPath = path.replace(/^\/*|\/+$/g, '');
 
     // get the query string as an object
-    const query = parsedUrl.query;
+    const queryStringObject = parsedUrl.query;
 
     // Get the HTTP method
     const method = req.method.toLowerCase();
@@ -27,10 +53,10 @@
     // Get the headers as an object
     const headers = req.headers;
 
-    // get the payloa, if any
+    // get the payload, if any
     const decoder = new StringDecoder('utf-8');
     let buffer = '';
-    // write the decoder data to the before
+    // write the decoded data to the buffer
     req.on('data', (data) => {
         // the data is in an unreadable format, decode it
         buffer += decoder.write(data);
@@ -45,14 +71,15 @@
     // construct the data object to send to the handler
      let data = {
          trimmedPath,
-         'queryStringPath': query,
+         queryStringObject,
          method,
          headers,
-         payload: buffer
+         payload: helpers.parseJsonToObject(buffer) 
      }
 
      // Route the request to the handler
      // args to handler are data and a callback func
+     // this is a function call!!!
      choosenHandler(data, (statusCode, payload) => {
         // use handler's status code or default 200
         statusCode = typeof(statusCode) === 'number' ? statusCode : 200;
@@ -70,39 +97,22 @@
 
         // log the request path
         console.log('Returning this response ', statusCode, payload);
-     })
+     });
 
     // send the response
-    res.end('Hello World \n');
+    //res.end('Hello World \n');
 
     // log the payload
      console.log(`Request recieved with these payload`, buffer)
         
     });
 
-
-
- })
-
-
-
- // Start the server
- server.listen(config.port, () => console.log(`The server is listening in port ${config.port} in ${config.envName} mode`))
-
- // define the handlers
-
- let handlers = {};
-
- handlers.sample = (data, callback) => {
-    // Callback a http status code and a payload object
-    callback(406, {'name': 'sample handler'})
  }
-
- handlers.notFound = (data, callback) => {
-    callback(404)
- }
-
+ 
  //define the request router
  const router = {
-     'sample': handlers.sample
+     'ping': handlers.ping,
+     'users': handlers.users,
+     'tokens': handlers.tokens,
+     'checks': handlers.checks,
  }
